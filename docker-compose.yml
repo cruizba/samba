@@ -6,8 +6,6 @@ services:
     container_name: samba
     environment:
       - TZ='Europe/Amsterdam'
-    networks:
-      - default
     ports:
       - "137:137/udp"
       - "138:138/udp"
@@ -23,6 +21,3 @@ services:
       - /mnt:/mnt:z
       - /mnt2:/mnt2:z
     command: '-s "Mount;/mnt" -s "Bobs Volume;/mnt2;yes;no;no;bob" -u "bob;bobspasswd" -p'
-
-networks:
-  default:
