@@ -1,4 +1,4 @@
-[![logo](https://raw.githubusercontent.com/dperson/samba/master/logo.jpg)](https://www.samba.org)
+[![logo](https://raw.githubusercontent.com/erriez/samba/master/logo.jpg)](https://www.samba.org)
 
 # Samba
 
@@ -16,17 +16,17 @@ By default there are no shares configured, additional ones can be added.
 
 ## Hosting a Samba instance
 
-    sudo docker run -it -p 139:139 -p 445:445 -d dperson/samba -p
+    sudo docker run -it -p 139:139 -p 445:445 -d erriez/samba -p
 
 OR set local storage:
 
     sudo docker run -it --name samba -p 139:139 -p 445:445 \
                 -v /path/to/directory:/mount \
-                -d dperson/samba -p
+                -d erriez/samba -p
 
 ## Configuration
 
-    sudo docker run -it --rm dperson/samba -h
+    sudo docker run -it --rm erriez/samba -h
     Usage: samba.sh [-opt] [command]
     Options (fields in '[]' are optional, '<>' are required):
         -h          This help
@@ -85,7 +85,7 @@ ENVIRONMENT VARIABLES
  * `RECYCLE` - As above, disable recycle bin
  * `SHARE` - As above, setup a share (See NOTE3 below)
  * `SMB` - As above, disable SMB2 minimum version
- * `TZ` - Set a timezone, IE `EST5EDT`
+ * `TZ` - Set a timezone, IE `Europe/Amsterdam`
  * `USER` - As above, setup a user (See NOTE3 below)
  * `WIDELINKS` - As above, allow access wide symbolic links
  * `WORKGROUP` - As above, set workgroup
@@ -109,17 +109,61 @@ Any of the commands can be run at creation with `docker run` or later with
 
 ### Setting the Timezone
 
-    sudo docker run -it -e TZ=EST5EDT -p 139:139 -p 445:445 -d dperson/samba -p
+    sudo docker run -it -e TZ=Europe/Amsterdam -p 139:139 -p 445:445 -d erriez/samba -p
 
 ### Start an instance creating users and shares:
 
-    sudo docker run -it -p 139:139 -p 445:445 -d dperson/samba -p \
+    sudo docker run -it -p 139:139 -p 445:445 -d erriez/samba -p \
                 -u "example1;badpass" \
                 -u "example2;badpass" \
                 -s "public;/share" \
                 -s "users;/srv;no;no;no;example1,example2" \
                 -s "example1 private share;/example1;no;no;no;example1" \
                 -s "example2 private share;/example2;no;no;no;example2"
+
+# Build image via Dockerfile
+
+Run the following command to build an image on a local machine via Dockerfile:
+
+```bash
+docker build -t <username>/samba:<tag> .
+
+# For example:
+docker build -t erriez/samba:master .
+```
+
+# Build image via docker-compose.yml
+
+To build an image on a local machine via `docker-compose.yml`, uncomment line `build: .` in 
+`docker-compose.yml` followed by `docker-compose build samba && docker-compose up`.
+
+# Multiarchitecture build
+
+The following commands can be used to build multiarchitecture Samba images with `docker buildx`:
+
+```bash
+# Docker installation Ubuntu https://docs.docker.com/engine/install/ubuntu/
+$ sudo apt-get remove docker docker-engine docker.io containerd runc
+$ sudo apt-get update
+$ sudo apt-get install ca-certificates curl gnupg lsb-release
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+$ echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+$ sudo apt-get update
+$ sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+# Install buildkit_qemu_emulator
+$ docker run -it --rm --privileged tonistiigi/binfmt --install all
+
+# Create new builder instance (one time)
+$ docker buildx create --use mybuild
+
+# Build image for AMD64, ARM64, ARMv6 and ARMv7 and push to DockerHub
+# Note, to test fist, replace --push with --load and remove --platform argument to build for current platform
+$ docker login
+$ docker buildx build --push --platform linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7 -t <username>/samba:<tag> .
+```
 
 # User Feedback
 
@@ -134,7 +178,7 @@ Add the `-p` option to the end of your options to the container, or set the
 
     sudo docker run -it --name samba -p 139:139 -p 445:445 \
                 -v /path/to/directory:/mount \
-                -d dperson/samba -p
+                -d erriez/samba -p
 
 If changing the permissions of your files is not possible in your setup you
 can instead set the environment variables `USERID` and `GROUPID` to the
@@ -148,7 +192,7 @@ docker_compose.yml files, IE:
 
     sudo docker run -it --name samba -m 512m -p 139:139 -p 445:445 \
                 -v /path/to/directory:/mount \
-                -d dperson/samba -p
+                -d erriez/samba -p
 
 * Attempting to connect with the `smbclient` commandline tool. By default samba
 still tries to use SMB1, which is depriciated and has security issues. This
@@ -159,4 +203,4 @@ any other options you would specify.
 ## Issues
 
 If you have any problems with or questions about this image, please contact me
-through a [GitHub issue](https://github.com/dperson/samba/issues).
+through a [GitHub issue](https://github.com/erriez/samba/issues).

@@ -13,7 +13,8 @@
 #        AUTHOR: David Personette (dperson@gmail.com),
 #  ORGANIZATION:
 #       CREATED: 09/28/2014 12:11
-#      REVISION: 1.0
+#       UPDATED: 19/12/2021 21:53 (Erriez)
+#      REVISION: 1.1
 #===============================================================================
 
 set -o nounset                              # Treat unset variables as an error
@@ -293,5 +294,5 @@ elif ps -ef | egrep -v grep | grep -q smbd; then
     echo "Service already running, please restart container to apply changes"
 else
     [[ ${NMBD:-""} ]] && ionice -c 3 nmbd -D
-    exec ionice -c 3 smbd -FS --no-process-group </dev/null
+    exec ionice -c 3 smbd -F --no-process-group </dev/null
 fi
