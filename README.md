@@ -85,7 +85,7 @@ ENVIRONMENT VARIABLES
  * `RECYCLE` - As above, disable recycle bin
  * `SHARE` - As above, setup a share (See NOTE3 below)
  * `SMB` - As above, disable SMB2 minimum version
- * `TZ` - Set a timezone, IE `EST5EDT`
+ * `TZ` - Set a timezone, IE `Europe/Amsterdam`
  * `USER` - As above, setup a user (See NOTE3 below)
  * `WIDELINKS` - As above, allow access wide symbolic links
  * `WORKGROUP` - As above, set workgroup
@@ -109,7 +109,7 @@ Any of the commands can be run at creation with `docker run` or later with
 
 ### Setting the Timezone
 
-    sudo docker run -it -e TZ=EST5EDT -p 139:139 -p 445:445 -d dperson/samba -p
+    sudo docker run -it -e TZ=Europe/Amsterdam -p 139:139 -p 445:445 -d dperson/samba -p
 
 ### Start an instance creating users and shares:
 

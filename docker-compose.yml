@@ -5,7 +5,7 @@ services:
     image: dperson/samba
     container_name: samba
     environment:
-      TZ: 'EST5EDT'
+      - TZ='Europe/Amsterdam'
     networks:
       - default
     ports:
