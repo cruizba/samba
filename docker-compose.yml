@@ -6,7 +6,7 @@ services:
     container_name: samba
     # build: .
     environment:
-      - TZ='Europe/Amsterdam'
+      - TZ=Europe/Amsterdam
     ports:
       - "137:137/udp"
       - "138:138/udp"
