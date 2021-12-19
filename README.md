@@ -2,7 +2,12 @@
 
 # Samba
 
-Samba docker container
+Samba docker container, derived from `dperson/samba`:
+
+- Updated images with `alpine:3.15` to fix critical vulnerabilities.
+- Update `docker-compose.yml` according updated Docker formatting.
+- Add multiarchitecture `buildx` support.
+- AMD64, ARM64, ARMv6 and ARMv7 images on [DockerHub](https://hub.docker.com/r/erriez/samba)
 
 # What is Samba?
 
