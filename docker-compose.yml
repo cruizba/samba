@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   samba:
-    image: dperson/samba
+    image: erriez/samba
     container_name: samba
     environment:
       - TZ='Europe/Amsterdam'
@@ -20,4 +20,4 @@ services:
     volumes:
       - /mnt:/mnt:z
       - /mnt2:/mnt2:z
-    command: '-s "Mount;/mnt" -s "Bobs Volume;/mnt2;yes;no;no;bob" -u "bob;bobspasswd" -p'
+    command: '-s "Mount;/mnt" -s "Erriez Volume;/mnt2;yes;no;no;erriez" -u "erriez;erriezpasswd" -p'
