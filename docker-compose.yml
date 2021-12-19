@@ -4,6 +4,7 @@ services:
   samba:
     image: erriez/samba
     container_name: samba
+    # build: .
     environment:
       - TZ='Europe/Amsterdam'
     ports:

@@ -121,6 +121,50 @@ Any of the commands can be run at creation with `docker run` or later with
                 -s "example1 private share;/example1;no;no;no;example1" \
                 -s "example2 private share;/example2;no;no;no;example2"
 
+# Build image via Dockerfile
+
+Run the following command to build an image on a local machine via Dockerfile:
+
+```bash
+docker build -t <username>/samba:<tag> .
+
+# For example:
+docker build -t erriez/samba:master .
+```
+
+# Build image via docker-compose.yml
+
+To build an image on a local machine via `docker-compose.yml`, uncomment line `build: .` in 
+`docker-compose.yml` followed by `docker-compose build samba && docker-compose up`.
+
+# Multiarchitecture build
+
+The following commands can be used to build multiarchitecture Samba images with `docker buildx`:
+
+```bash
+# Docker installation Ubuntu https://docs.docker.com/engine/install/ubuntu/
+$ sudo apt-get remove docker docker-engine docker.io containerd runc
+$ sudo apt-get update
+$ sudo apt-get install ca-certificates curl gnupg lsb-release
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+$ echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+$ sudo apt-get update
+$ sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+# Install buildkit_qemu_emulator
+$ docker run -it --rm --privileged tonistiigi/binfmt --install all
+
+# Create new builder instance (one time)
+$ docker buildx create --use mybuild
+
+# Build image for AMD64, ARM64, ARMv6 and ARMv7 and push to DockerHub
+# Note, to test fist, replace --push with --load and remove --platform argument to build for current platform
+$ docker login
+$ docker buildx build --push --platform linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7 -t <username>/samba:<tag> .
+```
+
 # User Feedback
 
 ## Troubleshooting
