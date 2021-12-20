@@ -6,6 +6,8 @@ Samba docker container, derived from `dperson/samba`:
 
 - Updated images with `alpine:3.15` to fix critical vulnerabilities.
 - Update `docker-compose.yml` according updated Docker formatting.
+- Add Windows Network Discovery example with WSDD
+- Add Linux Network Discovery example with Avahi
 - Add multiarchitecture `buildx` support.
 - AMD64, ARM64, ARMv6 and ARMv7 images on [DockerHub](https://hub.docker.com/r/erriez/samba)
 
@@ -21,13 +23,13 @@ By default there are no shares configured, additional ones can be added.
 
 ## Hosting a Samba instance
 
-    sudo docker run -it -p 139:139 -p 445:445 -d erriez/samba -p
+    sudo docker run -it -p 139:139 -p 445:445 -d erriez/samba:latest -p
 
 OR set local storage:
 
     sudo docker run -it --name samba -p 139:139 -p 445:445 \
                 -v /path/to/directory:/mount \
-                -d erriez/samba -p
+                -d erriez/samba:latest -p
 
 ## Configuration
 
@@ -114,17 +116,42 @@ Any of the commands can be run at creation with `docker run` or later with
 
 ### Setting the Timezone
 
-    sudo docker run -it -e TZ=Europe/Amsterdam -p 139:139 -p 445:445 -d erriez/samba -p
+    sudo docker run -it -e TZ=Europe/Amsterdam -p 139:139 -p 445:445 -d erriez/samba:latest -p
 
 ### Start an instance creating users and shares:
 
-    sudo docker run -it -p 139:139 -p 445:445 -d erriez/samba -p \
+    sudo docker run -it -p 139:139 -p 445:445 -d erriez/samba:latest -p \
                 -u "example1;badpass" \
                 -u "example2;badpass" \
                 -s "public;/share" \
                 -s "users;/srv;no;no;no;example1,example2" \
                 -s "example1 private share;/example1;no;no;no;example1" \
                 -s "example2 private share;/example2;no;no;no;example2"
+
+# Network discovery
+
+Windows and Linux no longer displays the Samba file-server in file managers by running the Samba
+Docker container only. To get this functionality back in Windows Explorer and Ubuntu Nautilus for
+example, two additional Docker containers can be started. An example is available in 
+[docker-compose.yml](https://github.com/Erriez/docker-samba/blob/master/docker-compose.yml).
+
+## Windows Explorer Network Discovery
+
+Windows dropped NetBIOS Network discovery. As a result, the Samba file-server is no longer available
+in `Windows Explorer | Network`. An additional `WSDD` (Web Service Discovery Daemon) Docker container
+can be started to get this functionality back. 
+
+**Note:** This container requires `--net=host` access.
+
+## Linux Network Discovery
+
+Also Ubuntu no longer displays the Samba file-server in `Nautilus | Other Locations` and 
+possible other Linux OS'es and file managers. An additional `Avahi` Docker container can be started
+to get this functionality back.
+
+`sudo apt install smbclient` is required on some distributions.
+
+**Note:** This container requires `--net=host` access.
 
 # Build image via Dockerfile
 
@@ -134,15 +161,25 @@ Run the following command to build an image on a local machine via Dockerfile:
 docker build -t <username>/samba:<tag> .
 
 # For example:
-docker build -t erriez/samba:master .
+docker build -t erriez/samba:latest .
 ```
 
-# Build image via docker-compose.yml
+# Run containers via docker-compose.yml
 
-To build an image on a local machine via `docker-compose.yml`, uncomment line `build: .` in 
-`docker-compose.yml` followed by `docker-compose build samba && docker-compose up`.
+Run the following commands to run Samba or all containers:
 
-# Multiarchitecture build
+```bash
+# Run Samba, Avahi and WSDD containers
+$ docker-compose up
+
+# Run Samba container only
+$ docker-compose up samba
+```
+
+Optionally, build images on a local machine via `docker-compose.yml` by uncomment lines `build: .` in 
+`docker-compose.yml` followed by `docker-compose build` command.
+
+# Multi-architecture build
 
 The following commands can be used to build multiarchitecture Samba images with `docker buildx`:
 
@@ -167,7 +204,14 @@ $ docker buildx create --use mybuild
 # Build image for AMD64, ARM64, ARMv6 and ARMv7 and push to DockerHub
 # Note, to test fist, replace --push with --load and remove --platform argument to build for current platform
 $ docker login
-$ docker buildx build --push --platform linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7 -t <username>/samba:<tag> .
+
+$ docker buildx build --push --platform linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7 -t <username>/samba:<tag> samba/
+
+# Optional for Linux discovery:
+$ docker buildx build --push --platform linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7 -t <username>/avahi:<tag> avahi/
+
+# Optional for Windows discovery:
+$ docker buildx build --push --platform linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7 -t <username>/wsdd:<tag> wsdd/
 ```
 
 # User Feedback
@@ -183,7 +227,7 @@ Add the `-p` option to the end of your options to the container, or set the
 
     sudo docker run -it --name samba -p 139:139 -p 445:445 \
                 -v /path/to/directory:/mount \
-                -d erriez/samba -p
+                -d erriez/samba:latest -p
 
 If changing the permissions of your files is not possible in your setup you
 can instead set the environment variables `USERID` and `GROUPID` to the
@@ -197,7 +241,7 @@ docker_compose.yml files, IE:
 
     sudo docker run -it --name samba -m 512m -p 139:139 -p 445:445 \
                 -v /path/to/directory:/mount \
-                -d erriez/samba -p
+                -d erriez/samba:latest -p
 
 * Attempting to connect with the `smbclient` commandline tool. By default samba
 still tries to use SMB1, which is depriciated and has security issues. This

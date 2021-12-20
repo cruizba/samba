@@ -1,10 +1,12 @@
 version: '3.4'
 
 services:
+  # Samba file-sharing server
   samba:
-    image: erriez/samba
+    image: erriez/samba:latest
     container_name: samba
-    # build: .
+    restart: always
+    # build: samba/
     environment:
       - TZ=Europe/Amsterdam
     ports:
@@ -15,10 +17,31 @@ services:
     read_only: true
     tmpfs:
       - /tmp
-    restart: unless-stopped
     stdin_open: true
     tty: true
     volumes:
-      - /mnt:/mnt:z
-      - /mnt2:/mnt2:z
-    command: '-s "Mount;/mnt" -s "Erriez Volume;/mnt2;yes;no;no;erriez" -u "erriez;erriezpasswd" -p'
+      - /tmp/share1:/mnt:z
+      - /tmp/share2:/mnt2:z
+    # -s <name>; <path> [; browse; readonly; guest; users; admins; writelist; comment]
+    command: '-s "MountRO; /mnt" -s "Erriez Volume;/mnt2;yes;no;no;erriez" -u "erriez;erriezpasswd" -p'
+
+  # Network Discovery Service for Windows
+  wsdd:
+    image: erriez/wsdd:latest
+    container_name: wsdd
+    # build: wsdd/
+    restart: always
+    network_mode: "host"
+    # Optional environment variables
+    # environment:
+    #   - WORKGROUP=WORKGROUP
+    #   - HOSTNAME=yourhostname
+    #   - DOMAIN=yourdomain
+
+  # Network Discovery Service for Linux
+  avahi:
+    image: erriez/avahi:latest
+    container_name: avahi
+    # build: avahi/
+    restart: always
+    network_mode: "host"
