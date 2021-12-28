@@ -1,3 +1,9 @@
+# About the fork
+
+This is a hotfix. I do not have plans to take over maintaining the project.
+
+My PRs to upstream have been merged to `main`, regular GH Actions builds have been strapped on.
+
 [![logo](https://raw.githubusercontent.com/dperson/samba/master/logo.jpg)](https://www.samba.org)
 
 # Samba
