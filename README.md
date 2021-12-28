@@ -4,6 +4,10 @@ This is a hotfix. I do not have plans to take over maintaining the project.
 
 My PRs to upstream have been merged to `main`, regular GH Actions builds have been strapped on.
 
+Besides 'get it working' patches, `[smb encrypt = auto](https://github.com/jtagcat/samba/commit/9bd1ed2f3978d4e872888a0a2fcfd6e6a422118c)` is the only 'feature' addition. It enables oppurtunistic encryption by default.
+
+***
+
 [![logo](https://raw.githubusercontent.com/dperson/samba/master/logo.jpg)](https://www.samba.org)
 
 # Samba
