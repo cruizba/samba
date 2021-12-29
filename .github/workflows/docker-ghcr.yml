@@ -30,12 +30,12 @@ jobs:
       - name: Build and push aarch64
         run: |
           img="ghcr.io/${{ github.repository }}:aarch64"
-          docker build . --file Dockerfile --tag "${img}" --label "runnumber=${GITHUB_RUN_ID}"
+          docker build . --file Dockerfile.aarch64 --tag "${img}" --label "runnumber=${GITHUB_RUN_ID}"
           docker push "${img}"
 
       - name: Build and push armhf
         run: |
           img="ghcr.io/${{ github.repository }}:armhf"
-          docker build . --file Dockerfile --tag "${img}" --label "runnumber=${GITHUB_RUN_ID}"
+          docker build . --file Dockerfile.armhf --tag "${img}" --label "runnumber=${GITHUB_RUN_ID}"
           docker push "${img}"
 
