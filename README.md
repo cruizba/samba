@@ -1,3 +1,7 @@
+[![CI](https://github.com/Erriez/docker-samba/actions/workflows/CI.yml/badge.svg)](https://github.com/Erriez/docker-samba/actions/workflows/CI.yml) 
+[![License](https://img.shields.io/github/license/Erriez/docker-samba)](https://github.com/Erriez/docker-samba/blob/master/LICENSE)
+[![Tag](https://shields.io/github/v/tag/Erriez/docker-samba)](https://github.com/Erriez/docker-samba/tags)
+
 [![logo](https://raw.githubusercontent.com/erriez/samba/master/logo.jpg)](https://www.samba.org)
 
 # Samba
@@ -6,10 +10,11 @@ Samba docker container, derived from `dperson/samba`:
 
 - Updated images with `alpine:3.15` to fix critical vulnerabilities.
 - Update `docker-compose.yml` according updated Docker formatting.
-- Add Windows Network Discovery example with WSDD
-- Add Linux Network Discovery example with Avahi
+- Add optional Windows Network Discovery example with WSDD.
+- Add optional Linux Network Discovery example with Avahi.
 - Add multiarchitecture `buildx` support.
 - AMD64, ARM64, ARMv6 and ARMv7 images on [DockerHub](https://hub.docker.com/r/erriez/samba)
+- Change license to MIT.
 
 # What is Samba?
 
