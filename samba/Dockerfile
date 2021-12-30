@@ -39,6 +39,7 @@ RUN apk --no-cache --no-progress upgrade && \
     echo '   recycle:versions = yes' >>$file && \
     echo '' >>$file && \
     echo '   # Security' >>$file && \
+    echo '   smb encrypt = desired' >>$file && \
     echo '   client ipc max protocol = SMB3' >>$file && \
     echo '   client ipc min protocol = SMB2_10' >>$file && \
     echo '   client max protocol = SMB3' >>$file && \
