@@ -1,41 +1,22 @@
-# https://github.com/jtagcat/action-docker-ghpackages/blob/main/.github/workflows/docker-ghcr.yml
-name: Release to Github Packages. # https://ghcr.io
-
-on: # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#on
-  push:
-    branches:
-      - main
+name: Build http-server docker image
+on:
   schedule:
-    - cron: '36 4 */7 * *' # weekly builds
-
+    - cron: "36 4 */7 * *"
+  workflow_dispatch:
 jobs:
-  # Push image to GitHub Packages.
-  push:
+  main:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - uses: actions/checkout@v2
-      - name: Authenticate with ghcr.io
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Build and push amd64
-        run: |
-          img="ghcr.io/${{ github.repository }}:amd64"
-          docker build . --file Dockerfile --tag "${img}" --label "runnumber=${GITHUB_RUN_ID}"
-          docker push "${img}"
-
-      - name: Build and push aarch64
-        run: |
-          img="ghcr.io/${{ github.repository }}:aarch64"
-          docker build . --file Dockerfile.aarch64 --tag "${img}" --label "runnumber=${GITHUB_RUN_ID}"
-          docker push "${img}"
-
-      - name: Build and push armhf
-        run: |
-          img="ghcr.io/${{ github.repository }}:armhf"
-          docker build . --file Dockerfile.armhf --tag "${img}" --label "runnumber=${GITHUB_RUN_ID}"
-          docker push "${img}"
+      - name: Set up QEMU for multi arch builds
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build images
+        run: chmod u+x build.sh && export FROM_CI=true && ./build.sh
 
