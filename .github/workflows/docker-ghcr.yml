@@ -1,4 +1,4 @@
-name: Build http-server docker image
+name: Build samba docker image
 on:
   schedule:
     - cron: "36 4 */7 * *"
